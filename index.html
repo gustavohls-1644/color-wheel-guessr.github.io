@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Wheel Geoguessr</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Color Wheel <span class="highlight">Geoguessr</span></h1>
+            <div class="score-board">
+                <div class="score-item">
+                    <span class="label">Round</span>
+                    <span class="value" id="round-display">1/5</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">Score</span>
+                    <span class="value" id="score-display">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-layout">
+                <div class="game-main">
+                    <div class="target-container">
+                        <h2>Find this color</h2>
+                        <div class="color-preview" id="target-color"></div>
+                    </div>
+
+                    <div class="wheel-container">
+                        <canvas id="color-wheel" width="400" height="400"></canvas>
+                        <div class="selection-indicator" id="selection-indicator"></div>
+                        <div class="target-indicator" id="target-indicator"></div>
+                        <div class="line-connector" id="line-connector"></div>
+                    </div>
+
+                    <div class="controls">
+                        <button id="guess-btn" class="btn primary" disabled>Make Guess</button>
+                    </div>
+                </div>
+
+                <div class="game-sidebar">
+                    <div id="result-panel" class="result-panel hidden">
+                        <h2 id="result-title">Great Guess!</h2>
+                        <div class="comparison">
+                            <div class="color-box">
+                                <div class="swatch" id="result-target"></div>
+                                <span>Target</span>
+                            </div>
+                            <div class="color-box">
+                                <div class="swatch" id="result-guess"></div>
+                                <span>Your Guess</span>
+                            </div>
+                        </div>
+                        <div class="score-details">
+                            <p>Distance: <span id="result-distance">0</span></p>
+                            <p class="points">+<span id="result-points">0</span> Points</p>
+                        </div>
+                        <button id="next-round-btn" class="btn secondary">Next Round</button>
+                    </div>
+
+                    <div id="placeholder-panel" class="placeholder-panel">
+                        <p>Make a guess to see results</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="game-over-overlay" class="overlay hidden">
+                <div class="result-card">
+                    <h2>Final Score</h2>
+                    <p class="final-score"><span id="final-score">0</span></p>
+                    <button id="restart-btn" class="btn primary">Play Again</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
