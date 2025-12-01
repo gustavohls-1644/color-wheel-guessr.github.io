@@ -8,13 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
         targetPos: { x: 0, y: 0 }, // Store target position relative to canvas center
         selectedColor: null,
         selectedPos: { x: 0, y: 0 },
-        isGameActive: true
+        isGameActive: true,
+        timer: null,
+        timeLeft: 60,
+        tutorialOrigin: null,
+        isPaused: false
     };
 
     // DOM Elements
     const elements = {
         roundDisplay: document.getElementById('round-display'),
         scoreDisplay: document.getElementById('score-display'),
+        timerDisplay: document.getElementById('timer-display'),
         targetColor: document.getElementById('target-color'),
         canvas: document.getElementById('color-wheel'),
         selectionIndicator: document.getElementById('selection-indicator'),
@@ -33,7 +38,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Game Over Overlay
         gameOverOverlay: document.getElementById('game-over-overlay'),
         restartBtn: document.getElementById('restart-btn'),
-        finalScore: document.getElementById('final-score')
+        restartBtn: document.getElementById('restart-btn'),
+        finalScore: document.getElementById('final-score'),
+        // Start Overlay
+        startGameOverlay: document.getElementById('start-game-overlay'),
+        startGameBtn: document.getElementById('start-game-btn'),
+        howToPlayBtn: document.getElementById('how-to-play-btn'),
+        // Tutorial Overlay
+        howToPlayBtn: document.getElementById('how-to-play-btn'),
+        // Tutorial Overlay
+        howToPlayOverlay: document.getElementById('how-to-play-overlay'),
+        closeTutorialBtn: document.getElementById('close-tutorial-btn'),
+        ingameHelpBtn: document.getElementById('ingame-help-btn')
     };
 
     const ctx = elements.canvas.getContext('2d');
@@ -43,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initGame() {
         drawColorWheel();
-        startNewGame();
         setupEventListeners();
+        // Don't start game automatically
     }
 
     function startNewGame() {
@@ -54,6 +70,67 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUI();
         startRound();
         elements.gameOverOverlay.classList.add('hidden');
+        elements.startGameOverlay.classList.add('hidden');
+    }
+
+    function startTimer() {
+        clearInterval(state.timer);
+        state.timeLeft = 60;
+        elements.timerDisplay.textContent = state.timeLeft;
+
+        state.timer = setInterval(() => {
+            if (state.isPaused) return;
+
+            state.timeLeft--;
+            elements.timerDisplay.textContent = state.timeLeft;
+
+            if (state.timeLeft <= 0) {
+                handleTimeUp();
+            }
+        }, 1000);
+    }
+
+    function handleTimeUp() {
+        clearInterval(state.timer);
+        state.isGameActive = false; // Prevent clicks
+
+        // Auto-select a dummy position (center) or just show result with 0 points
+        // We'll just show the result panel directly
+
+        const points = 0;
+        const distance = 0; // Or max distance? Let's say 0 distance but 0 points to indicate fail
+
+        // We need to show where the target was
+        // We can simulate a "guess" at the center or just not show a guess indicator
+        // Let's show the target indicator at least
+
+        showCorrectLocationForTimeout();
+
+        elements.resultTarget.style.backgroundColor = `rgb(${state.targetColor.r}, ${state.targetColor.g}, ${state.targetColor.b})`;
+        elements.resultGuess.style.backgroundColor = 'transparent'; // No guess
+
+        elements.resultDistance.textContent = "N/A";
+        elements.resultPoints.textContent = points;
+        elements.resultTitle.textContent = "Acabou o Tempo!";
+
+        elements.placeholderPanel.classList.add('hidden');
+        elements.resultPanel.classList.remove('hidden');
+    }
+
+    function showCorrectLocationForTimeout() {
+        // Calculate target position in CSS pixels
+        const rect = elements.canvas.getBoundingClientRect();
+        const scaleX = rect.width / elements.canvas.width;
+        const scaleY = rect.height / elements.canvas.height;
+
+        const targetCssX = state.targetPos.x * scaleX;
+        const targetCssY = state.targetPos.y * scaleY;
+
+        elements.targetIndicator.style.display = 'block';
+        elements.targetIndicator.style.left = `${targetCssX}px`;
+        elements.targetIndicator.style.top = `${targetCssY}px`;
+
+        // No line connector since no guess
     }
 
     function startRound() {
@@ -75,6 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.targetColor.style.backgroundColor = `rgb(${state.targetColor.r}, ${state.targetColor.g}, ${state.targetColor.b})`;
 
         updateUI();
+        startTimer();
     }
 
     function drawColorWheel() {
@@ -116,7 +194,36 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.canvas.addEventListener('click', handleCanvasClick);
         elements.guessBtn.addEventListener('click', handleGuess);
         elements.nextRoundBtn.addEventListener('click', nextRound);
+        elements.nextRoundBtn.addEventListener('click', nextRound);
         elements.restartBtn.addEventListener('click', startNewGame);
+        elements.startGameBtn.addEventListener('click', startNewGame);
+
+        elements.startGameBtn.addEventListener('click', startNewGame);
+
+        elements.howToPlayBtn.addEventListener('click', () => showTutorial('start'));
+        elements.ingameHelpBtn.addEventListener('click', () => showTutorial('game'));
+        elements.closeTutorialBtn.addEventListener('click', hideTutorial);
+    }
+
+    function showTutorial(origin) {
+        state.tutorialOrigin = origin;
+        elements.howToPlayOverlay.classList.remove('hidden');
+
+        if (origin === 'start') {
+            elements.startGameOverlay.classList.add('hidden');
+        } else if (origin === 'game') {
+            state.isPaused = true;
+        }
+    }
+
+    function hideTutorial() {
+        elements.howToPlayOverlay.classList.add('hidden');
+
+        if (state.tutorialOrigin === 'start') {
+            elements.startGameOverlay.classList.remove('hidden');
+        } else if (state.tutorialOrigin === 'game') {
+            state.isPaused = false;
+        }
     }
 
     function handleCanvasClick(e) {
@@ -150,6 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleGuess() {
         if (!state.selectedColor) return;
+
+        clearInterval(state.timer);
 
         const distance = calculateColorDistance(state.targetColor, state.selectedColor);
         const points = calculatePoints(distance);
@@ -198,10 +307,10 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.resultPoints.textContent = points;
 
         // Dynamic title based on score
-        if (points >= 4500) elements.resultTitle.textContent = "Perfect!";
-        else if (points >= 3000) elements.resultTitle.textContent = "Great!";
-        else if (points >= 1000) elements.resultTitle.textContent = "Good";
-        else elements.resultTitle.textContent = "Missed it";
+        if (points >= 4500) elements.resultTitle.textContent = "Perfeito!";
+        else if (points >= 3000) elements.resultTitle.textContent = "Ótimo!";
+        else if (points >= 1000) elements.resultTitle.textContent = "Bom";
+        else elements.resultTitle.textContent = "Errou feio";
 
         // Toggle Sidebar Panels
         elements.placeholderPanel.classList.add('hidden');

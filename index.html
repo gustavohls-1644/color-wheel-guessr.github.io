@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -15,14 +15,17 @@
     <div class="app-container">
         <header>
             <h1>Color Wheel <span class="highlight">Geoguessr</span></h1>
-            <div class="score-board">
-                <div class="score-item">
-                    <span class="label">Round</span>
-                    <span class="value" id="round-display">1/5</span>
-                </div>
-                <div class="score-item">
-                    <span class="label">Score</span>
-                    <span class="value" id="score-display">0</span>
+            <div class="header-right">
+                <button id="ingame-help-btn" class="btn-link">Como Jogar</button>
+                <div class="score-board">
+                    <div class="score-item">
+                        <span class="label">Rodada</span>
+                        <span class="value" id="round-display">1/5</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="label">Pontos</span>
+                        <span class="value" id="score-display">0</span>
+                    </div>
                 </div>
             </div>
         </header>
@@ -31,8 +34,12 @@
             <div class="game-layout">
                 <div class="game-main">
                     <div class="target-container">
-                        <h2>Find this color</h2>
+                        <h2>Encontre esta cor</h2>
                         <div class="color-preview" id="target-color"></div>
+                    </div>
+
+                    <div class="timer-container">
+                        <div id="timer-display" class="timer-large">60</div>
                     </div>
 
                     <div class="wheel-container">
@@ -43,41 +50,73 @@
                     </div>
 
                     <div class="controls">
-                        <button id="guess-btn" class="btn primary" disabled>Make Guess</button>
+                        <button id="guess-btn" class="btn primary" disabled>Adivinhar</button>
                     </div>
                 </div>
 
                 <div class="game-sidebar">
                     <div id="result-panel" class="result-panel hidden">
-                        <h2 id="result-title">Great Guess!</h2>
+                        <h2 id="result-title">Ótimo Chute!</h2>
                         <div class="comparison">
                             <div class="color-box">
                                 <div class="swatch" id="result-target"></div>
-                                <span>Target</span>
+                                <span>Alvo</span>
                             </div>
                             <div class="color-box">
                                 <div class="swatch" id="result-guess"></div>
-                                <span>Your Guess</span>
+                                <span>Seu Chute</span>
                             </div>
                         </div>
                         <div class="score-details">
-                            <p>Distance: <span id="result-distance">0</span></p>
-                            <p class="points">+<span id="result-points">0</span> Points</p>
+                            <p>Distância: <span id="result-distance">0</span></p>
+                            <p class="points">+<span id="result-points">0</span> Pontos</p>
                         </div>
-                        <button id="next-round-btn" class="btn secondary">Next Round</button>
+                        <button id="next-round-btn" class="btn secondary">Próxima Rodada</button>
                     </div>
 
                     <div id="placeholder-panel" class="placeholder-panel">
-                        <p>Make a guess to see results</p>
+                        <p>Faça um chute para ver os resultados</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="start-game-overlay" class="overlay">
+                <div class="result-card">
+                    <h2>Bem-vindo!</h2>
+                    <p style="margin-bottom: 2rem; color: var(--text-secondary);">Teste suas habilidades de percepção de
+                        cores.</p>
+                    <div class="button-group">
+                        <button id="start-game-btn" class="btn primary">Iniciar Jogo</button>
+                        <button id="how-to-play-btn" class="btn secondary">Como Jogar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="how-to-play-overlay" class="overlay hidden">
+                <div class="result-card" style="max-width: 500px; text-align: left;">
+                    <h2 style="text-align: center;">Como Jogar</h2>
+                    <ul class="instructions-list">
+                        <li><strong>Cor Alvo:</strong> Olhe para a cor mostrada na caixa superior.</li>
+                        <li><strong>Encontre-a:</strong> Clique na roda de cores onde você acha que essa cor está
+                            localizada.
+                        </li>
+                        <li><strong>Pontuação:</strong> Quanto mais próximo você estiver da cor correta, mais pontos
+                            você ganha!
+                        </li>
+                        <li><strong>Tempo:</strong> Você tem 60 segundos por rodada.</li>
+                        <li><strong>Rodadas:</strong> Jogue 5 rodadas para obter sua pontuação final.</li>
+                    </ul>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button id="close-tutorial-btn" class="btn primary">Entendi!</button>
                     </div>
                 </div>
             </div>
 
             <div id="game-over-overlay" class="overlay hidden">
                 <div class="result-card">
-                    <h2>Final Score</h2>
+                    <h2>Pontuação Final</h2>
                     <p class="final-score"><span id="final-score">0</span></p>
-                    <button id="restart-btn" class="btn primary">Play Again</button>
+                    <button id="restart-btn" class="btn primary">Jogar Novamente</button>
                 </div>
             </div>
         </main>
