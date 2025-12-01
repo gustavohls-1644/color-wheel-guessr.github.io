@@ -23,7 +23,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     background-image:
         radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 20%),
         radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 20%);
@@ -401,4 +402,68 @@ canvas:active {
 
 .instructions-list strong {
     color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow-y: auto;
+        height: auto;
+    }
+
+    .app-container {
+        padding: 1rem;
+        gap: 1.5rem;
+        padding-bottom: 3rem;
+        /* Add padding to bottom for scrolling */
+    }
+
+    h1 {
+        font-size: 1.25rem;
+    }
+
+    .game-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .game-sidebar {
+        width: 100%;
+        min-height: auto;
+        order: 2;
+        /* Ensure sidebar comes after game on mobile */
+    }
+
+    .wheel-container {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    .timer-large {
+        font-size: 2rem;
+    }
+
+    .result-card {
+        padding: 1.5rem;
+        width: 90%;
+        max-width: 350px;
+    }
+
+    .final-score {
+        font-size: 3rem;
+    }
+
+    .header-right {
+        align-items: center;
+    }
+
+    .score-board {
+        gap: 1rem;
+    }
+
+    .value {
+        font-size: 1rem;
+    }
 }
