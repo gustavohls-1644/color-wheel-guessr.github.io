@@ -134,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startRound() {
+        state.isGameActive = true;
         state.selectedColor = null;
         elements.selectionIndicator.style.display = 'none';
         elements.targetIndicator.style.display = 'none';
@@ -258,6 +259,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleGuess() {
         if (!state.selectedColor) return;
 
+        state.isGameActive = false;
+        elements.guessBtn.disabled = true;
         clearInterval(state.timer);
 
         const distance = calculateColorDistance(state.targetColor, state.selectedColor);
